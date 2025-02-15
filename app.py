@@ -16,6 +16,10 @@ import tempfile
 
 load_dotenv()
 
+# Set OpenAI API key from st.secrets
+if "openai" in st.secrets:
+    os.environ["OPENAI_API_KEY"] = st.secrets["openai"]["api_key"]
+
 if 'query_engine' not in st.session_state:
     st.session_state.query_engine = None
 if 'pdf_processed' not in st.session_state:
@@ -26,9 +30,11 @@ if 'pdf_name' not in st.session_state:
 st.title("Document Processing Pipeline with Vector Search Reranking")
 st.write("Upload a PDF document, then ask questions to get answers with citations.")
 
-openai_api_key = st.text_input("Enter your OpenAI API Key:", type="password")
-if openai_api_key:
-    os.environ["OPENAI_API_KEY"] = openai_api_key
+# Only show API key input if not provided in secrets
+if "openai" not in st.secrets:
+    openai_api_key = st.text_input("Enter your OpenAI API Key:", type="password")
+    if openai_api_key:
+        os.environ["OPENAI_API_KEY"] = openai_api_key
 
 def extract_text_from_pdf(pdf_file):
     """Extract text from a PDF file and return text with page numbers."""
@@ -60,7 +66,7 @@ def create_documents_with_metadata(text_by_page, pdf_name):
 def process_pdf(uploaded_file):
     """Process the uploaded PDF and create a query engine."""
     if not os.environ.get("OPENAI_API_KEY"):
-        st.error("Please enter your OpenAI API Key first.")
+        st.error("Please provide your OpenAI API Key in the app's secrets or enter it above.")
         return None
 
     with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_file:
