@@ -25,7 +25,7 @@ if 'pdf_processed' not in st.session_state:
 if 'pdf_name' not in st.session_state:
     st.session_state.pdf_name = None
 
-st.title("Document Q&A with Semantic Search and Citations")
+st.title("Document Processing Pipeline with Vector Search Reranking")
 st.write("Upload a PDF document, then ask questions to get answers with citations.")
 
 # API Key input
