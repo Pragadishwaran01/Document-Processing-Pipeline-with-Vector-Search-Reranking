@@ -16,7 +16,6 @@ import tempfile
 
 load_dotenv()
 
-# Set OpenAI API key from st.secrets
 if "openai" in st.secrets:
     os.environ["OPENAI_API_KEY"] = st.secrets["openai"]["api_key"]
 
@@ -30,7 +29,6 @@ if 'pdf_name' not in st.session_state:
 st.title("Document Processing Pipeline with Vector Search Reranking")
 st.write("Upload a PDF document, then ask questions to get answers with citations.")
 
-# Only show API key input if not provided in secrets
 if "openai" not in st.secrets:
     openai_api_key = st.text_input("Enter your OpenAI API Key:", type="password")
     if openai_api_key:
