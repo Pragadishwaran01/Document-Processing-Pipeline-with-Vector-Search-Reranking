@@ -14,10 +14,8 @@ from llama_index.vector_stores.qdrant import QdrantVectorStore
 import qdrant_client
 import tempfile
 
-# Load environment variables
 load_dotenv()
 
-# Initialize session state for storing the query engine
 if 'query_engine' not in st.session_state:
     st.session_state.query_engine = None
 if 'pdf_processed' not in st.session_state:
@@ -28,7 +26,6 @@ if 'pdf_name' not in st.session_state:
 st.title("Document Processing Pipeline with Vector Search Reranking")
 st.write("Upload a PDF document, then ask questions to get answers with citations.")
 
-# API Key input
 openai_api_key = st.text_input("Enter your OpenAI API Key:", type="password")
 if openai_api_key:
     os.environ["OPENAI_API_KEY"] = openai_api_key
@@ -46,17 +43,15 @@ def create_documents_with_metadata(text_by_page, pdf_name):
     documents = []
     
     for page_num, text in text_by_page.items():
-        if not text.strip():  # Skip empty pages
+        if not text.strip(): 
             continue
-        
-        # Create metadata with citation information
+
         metadata = {
             "source": pdf_name,
             "page": page_num,
             "citation": f"{pdf_name}, page {page_num}"
         }
-        
-        # Create Document with metadata
+
         doc = Document(text=text, metadata=metadata)
         documents.append(doc)
     
@@ -103,8 +98,7 @@ def process_pdf(uploaded_file):
             embed_model=embed_model,
             show_progress=True
         )
-        
-        # Step 6: Setup query engine with citations
+
         retriever = VectorIndexRetriever(index=index, similarity_top_k=4)
         
         text_qa_template = PromptTemplate(
@@ -155,11 +149,9 @@ def process_pdf(uploaded_file):
         st.error(f"An error occurred: {str(e)}")
         return None
     finally:
-        # Clean up temp file
         if os.path.exists(temp_path):
             os.unlink(temp_path)
 
-# Upload PDF file
 uploaded_file = st.file_uploader("Upload a PDF document", type="pdf")
 
 if uploaded_file and not st.session_state.pdf_processed:
@@ -170,7 +162,6 @@ if uploaded_file and not st.session_state.pdf_processed:
             st.session_state.pdf_name = uploaded_file.name
             st.success(f"Successfully processed '{uploaded_file.name}'")
 
-# Reset button
 if st.session_state.pdf_processed:
     if st.button("Process a different PDF"):
         st.session_state.query_engine = None
@@ -178,7 +169,6 @@ if st.session_state.pdf_processed:
         st.session_state.pdf_name = None
         st.experimental_rerun()
 
-# Query input
 if st.session_state.pdf_processed and st.session_state.query_engine:
     st.write(f"Currently using: {st.session_state.pdf_name}")
     query = st.text_input("Ask a question about the document:")
@@ -186,19 +176,16 @@ if st.session_state.pdf_processed and st.session_state.query_engine:
     if query:
         with st.spinner("Generating answer..."):
             response = st.session_state.query_engine.query(query)
-            
-            # Display the main response
+
             st.markdown("### Answer")
             st.write(str(response))
-            
-            # Display the citations
+
             if hasattr(response, 'source_nodes') and response.source_nodes:
                 st.markdown("### Citations")
                 for i, node in enumerate(response.source_nodes, 1):
                     citation = node.node.metadata.get('citation', 'No citation available')
                     st.write(f"[{i}] {citation}")
-                
-                # Detailed sources collapsible section
+
                 with st.expander("Show detailed sources"):
                     for i, node in enumerate(response.source_nodes, 1):
                         st.markdown(f"**Source {i}**")
