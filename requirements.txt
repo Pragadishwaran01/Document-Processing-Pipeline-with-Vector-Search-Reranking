@@ -4,4 +4,3 @@ python-dotenv
 llama-index
 openai
 qdrant-client
-tempfile
