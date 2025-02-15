@@ -9,6 +9,7 @@ Installation
 Clone the repository:
 
 git clone https://github.com/Pragadishwaran01/Document-Processing-Pipeline-with-Vector-Search-Reranking
+
 cd Document-Processing-Pipeline-with-Vector-Search-Reranking
 
 Install dependencies:
