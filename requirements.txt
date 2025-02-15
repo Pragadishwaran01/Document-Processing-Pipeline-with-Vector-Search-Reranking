@@ -1,0 +1,6 @@
+os
+pdfplumber
+python-dotenv
+llama-index
+qdrant-client
+openai
