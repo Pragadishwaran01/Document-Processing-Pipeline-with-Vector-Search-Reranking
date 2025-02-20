@@ -2,7 +2,7 @@ Document Processing Pipeline with Vector Search Reranking
 
 Overview
 
-This Streamlit application allows users to upload a PDF document, extract its data, and query the content using a vector search-based retrieval system. The pipeline includes document chunking, vector embedding, and query-based reranking with citations.
+This Streamlit application allows users to upload a documents, extract its data, and query the content using a vector search-based retrieval system. The pipeline includes document chunking, vector embedding, and query-based reranking with citations.
 
 Installation
 
